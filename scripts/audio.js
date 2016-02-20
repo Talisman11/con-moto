@@ -113,7 +113,7 @@ javascriptNode.onaudioprocess = function() {
     analyser.getByteFrequencyData(array);
 
     // clear the current state
-    ctx.clearRect(0, 0, 900, 550);
+    ctx.clearRect(0, 0, 928, 550);
 
     // set the fill style
     ctx.fillStyle=gradient;
