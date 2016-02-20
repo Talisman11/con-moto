@@ -36,13 +36,13 @@ h1 {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-  height: 500px;
+  height: 550px;
   
 }
 
 #playlist {
   width: 20%;
-  height: 550px;
+  height: inherit;
   background-color: rgba(255, 255, 255, 0.7);
   margin: 0.25em;
   border-radius: 10px;
@@ -51,13 +51,22 @@ h1 {
 
 #interact {
   width: 75%;
-  height: 550px;
+  height: inherit;
   background-color: rgba(255, 255, 255, 0.7);
+  margin-top: inherit;
   margin: 0.25em;
   border-radius: 10px;
   display: inline-block;
+  padding-right: auto;
+  padding-left: auto;
 }
 
+#canvas {
+  vertical-align: center;
+  margin-left: -450px;
+  position: absolute;
+  
+}
 
 
 
