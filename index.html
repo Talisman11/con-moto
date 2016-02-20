@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <title>con moto</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="scripts/search.js" type="text/javascript"></script>
-    <script src="https://apis.google.com/js/client.js?onload=onClientLoad" type="text/javascript"></script>
     <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <!--<link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">-->
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
@@ -27,8 +25,51 @@
     <div id="sidebar"></div>
       
     <div id="panels">
-      
-      <div id="playlist"></div>
+      <div id="playlist">
+      <!--<div id="player"></div>-->
+      <iframe id="ytplayer" type="text/html" width="480" height="360" src="https://www.youtube.com/embed/?listType=playlist&list=FLlVrJwcIy7saPcGc1nct80A" frameborder="0"></iframe>
+      <script>
+	  var tag = document.createElement('script');
+
+	  tag.src = "https://www.youtube.com/iframe_api"
+	  var firstScriptTag = document.getElementsByTagName('script')[0];
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+	  var player;
+          function onYouTubeIframeAPIReady(){
+			player = new YT.Player('player',{
+				height: '360',
+				width:	'480',
+	//			loadPlaylist: {
+	//				listType: "playlist",
+	//				list: "FLlVrJwcIy7saPcGc1nct80A",
+					
+	//			},	
+				events: {
+				    'onReady': onPlayerReady,
+				    'onStateChange': onPlayerStateChange
+				},
+			});
+	}
+	  done = false;
+	  function onPlayerStateChange(event){
+		if(event.data == YT.PlayerState.PLAYING) {
+			event.nextVideo();
+	}	
+	//	 if (event.data == YT.PlayerState.PLAYING && !done) {
+         // setTimeout(stopVideo, 6000);
+          //done = true;
+        }  
+	}
+	  function onPlayerReady(event) {
+		event.target.loadPlaylist("FLlVrJwcIy7saPcGc1nct80A")
+		event.target.playVideo();
+	  }
+	function stopVideo() {
+		player.stopVideo();
+	}
+	</script>
+      </div>
 
       <div id="interact">
 
@@ -36,7 +77,6 @@
       </div>
       
     </div>
-    <pre id="response">rilakkuma wa dara dara desu</pre> 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>  
     <script>

@@ -68,7 +68,7 @@ h1 {
 #interact {
   width: 97%;
   height: inherit;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.0); /*transparent div*/
   margin-top: inherit;
   margin: 0.25em;
   border-radius: 10px;
