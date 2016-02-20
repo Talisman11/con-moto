@@ -16,6 +16,8 @@ var javascriptNode;
 
 // get the context from the canvas to draw on
 var ctx = $("#canvas").get()[0].getContext("2d");
+// ctx.fillStyle = "rgba(255, 255, 0, 1.0)"; //tranparent canvas, if necessary
+
 
 // create a gradient for the fill. Note the strange
 // offset, since the gradient is calculated based on
