@@ -38,8 +38,22 @@
     </div>
     <pre id="response">rilakkuma wa dara dara desu</pre> 
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>  
+    <script>
+      $('#sidebar').mouseover(function(){
+          $('#playlist').animate({width: '31%'}, 500);
+          $('#interact').animate({width: '66%'}, 500);
+        });
+      $('#playlist').mouseleave(function(){
+          $('#playlist').animate({width: '0%'}, 500);
+          $('#interact').animate({width: '97%'}, 500);
+        });
+      </script>
+      
     <script src="scripts/jquery-1.12.0.min.js"></script>
     <script src="scripts/audio.js"></script>
+      
+      
   </body>
 
     
