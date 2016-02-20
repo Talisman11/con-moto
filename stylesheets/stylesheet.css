@@ -35,12 +35,15 @@ h1 {
 #sidebar {
   text-align: center;
   margin-top: inherit;
-  width: 20px;
+  margin-left: 0;
+  width: 50px;
   height: 550px;
   display: inline-block;
-  background-color: red;
+  /*background-color: red;*/
   position: absolute;
 }
+
+
 
 #panels {
   text-align: center;
@@ -49,13 +52,8 @@ h1 {
   height: 550px;
 }
 
-/*
-#sidebar:hover  {
-  
-}*/
-
 #playlist {
-  width: 20%;
+  width: 0%;
   height: inherit;
   background-color: rgba(255, 255, 255, 0.7);
   margin-top: inherit;
@@ -64,10 +62,11 @@ h1 {
   display: inline-block;
   position: relative;
   float: left;
+  /*display: hidden;*/
 }
 
 #interact {
-  width: 75%;
+  width: 97%;
   height: inherit;
   background-color: rgba(255, 255, 255, 0.0); /*transparent div*/
   margin-top: inherit;
@@ -89,3 +88,16 @@ h1 {
   position: relative;
   display: inline;
 }
+
+/*
+#sidebar:hover {
+  margin-left: -100px;
+}
+
+#sidebar:hover #playlist {
+  width: 20%
+}
+
+#sidebar:hover #interact {
+  width: 75%;
+} */
