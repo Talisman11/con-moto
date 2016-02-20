@@ -1,6 +1,6 @@
 function showResponse(response) {
 	var responseString = JSON.stringify(response, '', 2);
-	document.getElementById('response').innerHTML('response')+=responseString;
+	document.getElementById('response').innerHTML+=responseString;
 }
 
 function onClientLoad() {
@@ -13,7 +13,7 @@ function onYouTubeApiLoad() {
 }
 
 function search(){
-	var request = gapi.client.youtube.search.list({
+	var request = gapi.client.youtube.playlist.list({
 		part: 'snippet'
 	});
 	request.execute(onSearchResponse);
