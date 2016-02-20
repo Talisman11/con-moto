@@ -1,88 +1,57 @@
 <!DOCTYPE html>
 <html lang="en-us">
   
-  <head>
-    <meta charset="UTF-8">
-    <title>con moto</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <!--<link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">-->
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+  	<head>
+		<meta charset="UTF-8">
+		<title>con moto</title>
+    		<meta name="viewport" content="width=device-width, initial-scale=1">
+    		<link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    		<link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+	</head>   
+	<body>
+		<h1>c o n  m o t o</h1>
+     		<div id="sidebar"></div>
+      		<div id="panels">
+			<div id="playlist">
+				<div id="player"></div>	
+				<script>
+					var tag = document.createElement('script');
+					tag.src = "https://www.youtube.com/iframe_api";
+					var firstScriptTag = document.getElementsByTagName('script')[0];
+					firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-  </head>
-    
-	<body>    
-    <!--<section class="page-header">
-      <h1 class="project-name">Con-moto</h1>
-      <h2 class="project-tagline">Minimalist abstract musical experience</h2>
-      <a href="https://github.com/unFearing/con-moto" class="btn">View on GitHub</a>
-    </section>-->
+				function onYouTubeIframeAPIReady(){
+					var player = new YT.Player('player',{
+						height: '200',
+						width: '320',
+						loadPlayList: {
+							listType: 'playlist',
+							list: 'PLBB6FBE5F8B13FB77',
+						},
+						events: {
+							'onReady': onPlayerReady,
+							'onStateChange': onPlayerStateChange
+						}
+					});
+				}
+				function onPlayerReady(event){
+					event.target.loadPlaylist({list: "PLBB6FBE5F8B13FB77"});
+				}
+				function onPlayerStateChange(event){
+					if(event.data == 0) {}
+				}
+				function stopVideo() { player.stopVideo(); }
+	
+				</script>
+      			</div>
 
-     
-    <h1>c o n  m o t o</h1>
-     
-    <div id="sidebar"></div>
-      
-    <div id="panels">
-      <div id="playlist">
-      <!--<div id="player"></div>-->
-      <iframe id="ytplayer" type="text/html" width="480" height="360" src="https://www.youtube.com/embed/?listType=playlist&list=FLlVrJwcIy7saPcGc1nct80A" frameborder="0"></iframe>
-      <script>
-	  var tag = document.createElement('script');
-
-	  tag.src = "https://www.youtube.com/iframe_api"
-	  var firstScriptTag = document.getElementsByTagName('script')[0];
-          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-	  var player;
-          function onYouTubeIframeAPIReady(){
-			player = new YT.Player('player',{
-				height: '360',
-				width:	'480',
-	//			loadPlaylist: {
-	//				listType: "playlist",
-	//				list: "FLlVrJwcIy7saPcGc1nct80A",
-					
-	//			},	
-				events: {
-				    'onReady': onPlayerReady,
-				    'onStateChange': onPlayerStateChange
-				},
-			});
-	}
-	  done = false;
-	  function onPlayerStateChange(event){
-		if(event.data == YT.PlayerState.PLAYING) {
-			event.nextVideo();
-	}	
-	//	 if (event.data == YT.PlayerState.PLAYING && !done) {
-         // setTimeout(stopVideo, 6000);
-          //done = true;
-        }  
-	}
-	  function onPlayerReady(event) {
-		event.target.loadPlaylist("FLlVrJwcIy7saPcGc1nct80A")
-		event.target.playVideo();
-	  }
-	function stopVideo() {
-		player.stopVideo();
-	}
-	</script>
-      </div>
-
-      <div id="interact">
-
-        <canvas id="canvas" width="928" height="550"></canvas>
-      </div>
-      
-    </div>
-
-    <script src="scripts/jquery-1.12.0.min.js"></script>
-    <script src="scripts/audio.js"></script>
-  </body>
-
-    
+      			<div id="interact">
+				<canvas id="canvas" width="928" height="550"></canvas>
+      			</div>
+    		</div>
+    		<script src="scripts/jquery-1.12.0.min.js"></script>
+    		<script src="scripts/audio.js"></script>
+  	</body>
 </html>
 
 
