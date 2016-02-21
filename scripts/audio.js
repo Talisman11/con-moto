@@ -184,18 +184,20 @@ javascriptNode.onaudioprocess = function() {
     ctx.clearRect(0, 0, 928, 550);
 
     // set the fill style
-    if(accessed){
-        var colors = bindSliders(currSong);
-        var high_col = colorMod($("#high")); // lighten / transparency?
-        var vol_col = colorMod($("#vol") + colors[0] + high_col);
-        var bass_col = colorMod($("#bass") + colors[1] + high_col);
-        var low_col = colorMod($("#low") + colors[2] + high_col);
+    if(playlist.hasOwnProperty("songs")){
+    	playlist.forEach(function(song){
+            var colors = bindSliders(song);
+            var high_col = colorMod($("#high")); // lighten / transparency?
+            var vol_col = colorMod($("#vol") + colors[0] + high_col);
+            var bass_col = colorMod($("#bass") + colors[1] + high_col);
+            var low_col = colorMod($("#low") + colors[2] + high_col);
 
-        gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
-        gradient.addColorStop(1,'#000000'); //black
-        gradient.addColorStop(0.6, vol_col); //green
-        gradient.addColorStop(0.5, bass_col); //blue
-        gradient.addColorStop(0.45, low_col); //red
+            gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
+            gradient.addColorStop(1,'#000000'); //black
+            gradient.addColorStop(0.6, vol_col); //green
+            gradient.addColorStop(0.5, bass_col); //blue
+            gradient.addColorStop(0.45, low_col); //red
+    	});
     }
     ctx.fillStyle=gradient;
     drawSpectrum(array);
