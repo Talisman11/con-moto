@@ -6,10 +6,27 @@
 	};
  }
 
+//user picks a song to manipulate, invoking this function
+function bindSliders(song){ //might need to add more paramteres
+	//lets get our data
+	var danceability, energy, liveness;
+	danceability = song.audio_summary.danceability;
+	energy = song.audio_summary.energy;
+	liveness = song.audio_summary.liveness;
+	
+	//map values to color
+	var green, blue, alpha;
+	green = 255 * danceability;
+	blue = 255 * energy;
+	alpha = 255 * liveness;
+
+	return [green,blue,alpha];
+}
 
 function playListButton(title, playlist){
 	var link = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:TITLE:TRACKS" style="width:350px; height:500px;" frameborder="0"></iframe>';
 	var ids = [];
+	console.log(playlist);
 	playlist.forEach(function(song) {
 		var split = fidtoSpid(song.tracks[0].foreign_id);
 		ids.push(split);
