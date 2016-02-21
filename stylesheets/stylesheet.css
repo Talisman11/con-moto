@@ -137,6 +137,11 @@ h1 {
 
 }
 
+#artist {
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
 #results{
   margin-top: 7px;
   margin-bottom: 7px;
