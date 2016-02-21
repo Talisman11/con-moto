@@ -54,11 +54,11 @@ var ctx = $("#canvas").get()[0].getContext("2d");
 // create a gradient for the fill. Note the strange
 // offset, since the gradient is calculated based on
 // the canvas, not the specific element we draw
-var gradient = ctx.createLinearGradient(0,0,0,900);
-gradient.addColorStop(1,'#000000');
-gradient.addColorStop(0.75,'#0000ff');
-gradient.addColorStop(0.25,'#00ffff');
-gradient.addColorStop(0,'#00ff00');
+var gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
+gradient.addColorStop(1,'#000000'); //black
+gradient.addColorStop(0.75,'#0000ff'); //blue
+gradient.addColorStop(0.25,'#00ffff'); //cyan
+gradient.addColorStop(0,'#00ff00'); //green
 
 // load the sound
 setupAudioNodes();
