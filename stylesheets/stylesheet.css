@@ -65,13 +65,8 @@ h1 {
   display: inline-block;
   position: relative;
   float: left;
-<<<<<<< HEAD
   padding-top, padding-bottom: 15px;
-  
-=======
-  padding-left: 10px;
-  padding-right: 10px;
->>>>>>> 5cb805698a7f1a30164f30850d689aee47f9e594
+
   /*display: hidden;*/
 }
 
@@ -145,6 +140,11 @@ h1 {
 #artist {
   margin-top: 7px;
   margin-bottom: 7px;
+}
+
+#artistbox {
+   margin-top: 7px;
+   margin-bottom: 7px;
 }
 
 #results{
