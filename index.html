@@ -45,7 +45,7 @@
 	var url = config.echoNestHost + '/api/v4/playlist/static';
 	$("#results").empty();
 	console.log("curating...");
-	$.getJSON(url, {'artist'=input,
+	$.getJSON(url, {'artist': input,
 			'api_key': config.apiKey,
 			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit'=true, 'variety'=1, 'results'=10,type='artist-radio' })
 		.done(function(data){
