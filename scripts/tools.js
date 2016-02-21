@@ -33,7 +33,6 @@ function bindSliders(song){ //might need to add more paramteres
 function playListButton(title, playlist){
 	var link = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:TITLE:TRACKS" style="width:350px; height:500px;" frameborder="0"></iframe>';
 	var ids = [];
-	console.log(playlist);
 	playlist.forEach(function(song) {
 		var split = fidtoSpid(song.tracks[0].foreign_id);
 		ids.push(split);

@@ -182,13 +182,15 @@ javascriptNode.onaudioprocess = function() {
     ctx.clearRect(0, 0, 928, 550);
 
     // set the fill style
-    if(accessed){
-	var colors = bindSliders(currSong);
-	gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
-	gradient.addColorStop(1,'#000000'); //black
-	gradient.addColorStop(0.75,'#0000ff'); //blue
-	gradient.addColorStop(0.25,'#00ffff'); //cyan
-	gradient.addColorStop(0,'#00ff00'); //green
+    if(playlist.hasOwnProperty("songs")){
+	playlist.forEach(function(song){
+		var colors = bindSliders(song);
+		gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
+		gradient.addColorStop(1,'#000000'); //black
+		gradient.addColorStop(0.75,'#0000ff'); //blue
+		gradient.addColorStop(0.25,'#00ffff'); //cyan
+		gradient.addColorStop(0,'#00ff00'); //green
+	});
 }
     ctx.fillStyle=gradient;
     drawSpectrum(array);
