@@ -65,7 +65,7 @@ gradient.addColorStop(0.45,'#99ffa3'); //red
 // load the sound
 setupAudioNodes();
 // loadSound("testing/Crisis.mp3");
-var sampleSong = "/testing/Dereck Recay - Dream Way (Original Mix).mp3";
+var sampleSong = "testing/Dereck Recay - Dream Way (Original Mix).mp3";
 loadSound(sampleSong);
 
 function setupAudioNodes() {
