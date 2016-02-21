@@ -44,42 +44,46 @@
           $('#interact').animate({width: '97%'}, 500);
         });
       </script>
-
-    <script src="scripts/audio.js"></script>
     <script src="scripts/tools.js"></script>
-	  </body>
-  <script type="text/javascript">
+    <script src="scripts/audio.js"></script>
+       </body>
+       <script type="text/javascript">
 
-  jQuery.ajaxSettings.traditional = true;
-  var config = getConfig();
-
-  function getArtist(input, wandering, variety){
-	var url = config.echoNestHost + 'api/v4/playlist/static';
-	$("#results").empty();
-	console.log("curating...");
-	$.ajax({
-		url: url,
-		type: "GET",
-		dataType: "json",
-		crossDomain: true,
-		data: {'artist': input,
- 			'api_key': config.apiKey,
- 			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit':true, 'variety':1, 'results':10, type:'artist-radio', },
-		success: function(data){
-			if(!(data.response.hasOwnProperty("songs"))){
+  	jQuery.ajaxSettings.traditional = true;
+  	var config = getConfig();
+ 	var playlist
+	function getArtist(input, wandering, variety){
+		var url = config.echoNestHost + 'api/v4/playlist/static';
+		$("#results").empty();
+		console.log("curating...");
+		$.ajax({
+			url: url,
+			type: "GET",
+			dataType: "json",
+			crossDomain: true,
+			data: {'artist': input,
+ 				'api_key': config.apiKey,
+ 				'bucket': ['id:' + config.spotifySpace, 'audio_summary'], 'limit':true, 'variety':1, 'results':10, type:'artist-radio', },
+			success: function(data){
+				if(!(data.response.hasOwnProperty("songs"))){
                            	console.log("whoopsies");
-			} else {
- 				var title = "Results for" + input;
- 				var spotifyPlayButton = playListButton(title, data.response.songs);
-				console.log(data.response.songs);
- 				$("#results").append(spotifyPlayButton);
-			}
+				} else {
+					console.log("got the songs, gonna make the player");
+ 					var title = "Results for" + input;
+ 					//var spotifyPlayButton = playListButton(title, data.response.songs);
+					console.log(data.response.songs);
+					playlist = data.response.songs;
+					playlist.forEach(function(song){
+ 						$("#results").append(String(song.title)+'\n');
+					});
+				}
 
-		},
-		error: function(err, res){
-			console.log(err);
+			},
+			error: function(err, res){
+				console.log(err);
 		}
 	});
+	
 /*	$.getJSON(url, {'artist': input,
 			'api_key': config.apiKey,
 			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit':true, 'variety':1, 'results':10, type:'artist-radio', })
@@ -96,8 +100,8 @@
 			console.log("bigger whoopsies!")
 		});
 */
- 
 }
+
 function newSearch(){
 	var artist = $("#artist").val();
 	getArtist(artist,false,.2);
