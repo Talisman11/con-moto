@@ -1,5 +1,3 @@
-
-// create the audio context (chrome only for now)
 // create the audio context (chrome only for now)
 if (! window.AudioContext) {
     if (! window.webkitAudioContext) {
@@ -53,6 +51,7 @@ function setupAudioNodes() {
 }
 
 // load the specified sound
+var global_buffer;
 function loadSound(url) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -63,8 +62,9 @@ function loadSound(url) {
 
         // decode the data
         context.decodeAudioData(request.response, function(buffer) {
-            // when the audio is decoded play the sound
-            playSound(buffer);
+            global_buffer = buffer;
+            sourceNode.buffer = buffer;
+            playSound();
         }, onError);
     }
     request.send();
@@ -94,13 +94,42 @@ function loadSound(url) {
     // xhr.send();
 
 }
+var startOffset = 0;
+var startTime = 0;
+var first = false;
+function playSound() {
+    startTime = context.currentTime;
+    if (!first) {
+        var sourceNode = context.createBufferSource();
+        sourceNode.buffer = global_buffer;
+        sourceNode.loop = true;
+        sourceNode.connect(analyser);
+        analyser.connect(javascriptNode);
 
-function playSound(buffer) {
-    sourceNode.buffer = buffer;
-    sourceNode.start(0);
+        sourceNode.connect(context.destination);
+        // Start playback, but make sure we stay in bound of the buffer.
+        sourceNode.start(0, startOffset % global_buffer.duration);
+        
+    } else {
+        first = true;
+        sourceNode.loop = true;
+        sourceNode.connect(analyser);
+        analyser.connect(javascriptNode);
+
+        sourceNode.connect(context.destination);
+        // Start playback, but make sure we stay in bound of the buffer.
+        sourceNode.start(0, startOffset % global_buffer.duration);
+    }
 }
 
-// log if an error occurs
+function pauseSound() {
+  if (sourceNode) {
+    sourceNode.stop();
+    // Measure how much time passed since the last pause.
+    startOffset += context.currentTime - startTime;
+  }
+}
+
 function onError(e) {
     console.log(e);
 }
@@ -127,79 +156,58 @@ function drawSpectrum(array) {
     for ( var i = 0; i < (array.length); i++ ){
         var value = array[i];
 
-        ctx.fillRect(i*5,550-value,4,300);
+        ctx.fillRect(i*5,550-value,4,550);
         // console.log([i,value])
     }
 };
 // ------------------------
 
-// var FilterSample = {
-//   FREQ_MUL: 7000,
-//   QUAL_MUL: 30,
-//   playing: false
-// };
+function showValue(newValue)
+{
+    this.innerHTML=newValue;
+}
 
-// FilterSample.play = function() {
-//   // Create the source.
-//   var source = context.createBufferSource();
-//   source.buffer = BUFFERS.techno;
-//   // Create the filter.
-//   var filter = context.createBiquadFilter();
-//   //filter.type is defined as string type in the latest API. But this is defined as number type in old API.
-//   filter.type = (typeof filter.type === 'string') ? 'lowpass' : 0; // LOWPASS
-//   filter.frequency.value = 5000;
-//   // Connect source to filter, filter to destination.
-//   source.connect(filter);
-//   filter.connect(context.destination);
-//   // Play!
-//   if (!source.start)
-//     source.start = source.noteOn;
-//   source.start(0);
-//   source.loop = true;
-//   // Save source and filterNode for later access.
-//   this.source = source;
-//   this.filter = filter;
-// };
 
-// FilterSample.stop = function() {
-//   if (!this.source.stop)
-//     this.source.stop = source.noteOff;
-//   this.source.stop(0);
-//   this.source.noteOff(0);
-// };
+var VolumeSample = {
+};
 
-// FilterSample.toggle = function() {
-//   this.playing ? this.stop() : this.play();
-//   this.playing = !this.playing;
-// };
+// Gain node needs to be mutated by volume control.
+VolumeSample.gainNode = null;
 
-// FilterSample.changeFrequency = function(element) {
-//   // Clamp the frequency between the minimum value (40 Hz) and half of the
-//   // sampling rate.
-//   var minValue = 40;
-//   var maxValue = context.sampleRate / 2;
-//   // Logarithm (base 2) to compute how many octaves fall in the range.
-//   var numberOfOctaves = Math.log(maxValue / minValue) / Math.LN2;
-//   // Compute a multiplier from 0 to 1 based on an exponential scale.
-//   var multiplier = Math.pow(2, numberOfOctaves * (element.value - 1.0));
-//   // Get back to the frequency value between min and max.
-//   this.filter.frequency.value = maxValue * multiplier;
-// };
+VolumeSample.play = function() {
+  if (!context.createGain)
+    context.createGain = context.createGainNode;
+  this.gainNode = context.createGain();
+  var source = context.createBufferSource();
+  source.buffer = BUFFERS.techno;
 
-// FilterSample.changeQuality = function(element) {
-//   this.filter.Q.value = element.value * this.QUAL_MUL;
-// };
+  // Connect source to a gain node
+  source.connect(this.gainNode);
+  // Connect gain node to destination
+  this.gainNode.connect(context.destination);
+  // Start playback in a loop
+  source.loop = true;
+  if (!source.start)
+    source.start = source.noteOn;
+  source.start(0);
+  this.source = source;
+};
 
-// FilterSample.toggleFilter = function(element) {
-//   this.source.disconnect(0);
-//   this.filter.disconnect(0);
-//   // Check if we want to enable the filter.
-//   if (element.checked) {
-//     // Connect through the filter.
-//     this.source.connect(this.filter);
-//     this.filter.connect(context.destination);
-//   } else {
-//     // Otherwise, connect directly.
-//     this.source.connect(context.destination);
-//   }
-// };
+VolumeSample.changeVolume = function(element) {
+  var volume = element.value;
+  var fraction = parseInt(element.value) / parseInt(element.max);
+  // Let's use an x*x curve (x-squared) since simple linear (x) does not
+  // sound as good.
+  this.gainNode.gain.value = fraction * fraction;
+};
+
+VolumeSample.stop = function() {
+  if (!this.source.stop)
+    this.source.stop = source.noteOff;
+  this.source.stop(0);
+};
+
+VolumeSample.toggle = function() {
+  this.playing ? this.stop() : this.play();
+  this.playing = !this.playing;
+};

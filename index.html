@@ -9,6 +9,9 @@
     <!--<link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">-->
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.indigo-pink.min.css">
+<script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
 
   </head>
     
@@ -72,8 +75,15 @@
       </div>
 
       <div id="interact">
-
-        <canvas id="canvas" width="928" height="550"></canvas>
+          <div id="sliders">
+            <button id="play" onClick="playSound()">Play</button>
+            <button id="pause" onClick="pauseSound()">Pause</button>
+            <span> <input id="vol" class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
+            <span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
+            <span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
+            <span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
+          </div>
+          <canvas id="canvas" width="928" height="550"></canvas>
       </div>
       
     </div>
@@ -90,6 +100,7 @@
         });
       </script>
       
+
     <script src="scripts/jquery-1.12.0.min.js"></script>
     <script src="scripts/audio.js"></script>
       
