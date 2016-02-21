@@ -1,4 +1,3 @@
-
   function getConfig(){
 	return {
 		apiKey: "KQOXQN3XYFH2F1T96",
@@ -12,7 +11,7 @@ function playListButton(title, playlist){
 	var link = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:TITLE:TRACKS" style="width:350px; height:250px;" frameborder="0"></iframe>';
 	var ids = [];
 	playlist.forEach(function(song) {
-		var split = song.split[0].foreign_id(':');
+		var split = song.tracks[0].foreign_id.split[0](':');
 		ids.push(split[split.length-1]);
 	});
 	var tracks = ids.join(',');
