@@ -16,7 +16,7 @@ function bindSliders(song){ //might need to add more paramteres
 	var oneG = D & 0x0000ff;
 	var oneB = E & 0x00ff00;
 	var oneA = L & 0xff0000;
-	var colorOne = oneG + oneB +oneA;
+	var colorOne = oneG + oneB + oneA;
 	
 	var twoG = D & 0x00ff00;
 	var twoB = E & 0xff0000;
