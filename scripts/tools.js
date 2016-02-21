@@ -34,7 +34,7 @@ function getSpotifyPlayer(inPlaylist, callback) {
             tids.push(tid);
         });
 
-        $.getJSON("https://api.spotify.com/v1/tracks/", { 'ids': tids.join(',')}) 
+        $.getJSON("https://api.spotify.com/v1/tracks/", { apiKey: getConfig().apiKey,'ids': tids.join(',')}) 
             .done(function(data) {
                 console.log('sptracks', tids, data);
                 data.tracks.forEach(function(track, i) {
