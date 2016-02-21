@@ -37,12 +37,14 @@
     <script src="scripts/audio.js"></script>
   </body>
   <script type="text/javascript">
+
   jQuery.ajaxSettings.traditional = true;
   var config = getConfig();
 
   function getArtist(input, wandering, variety){
-	var url=config.echoNestHost + '/api/v4/playlist/static';
+	var url = config.echoNestHost + '/api/v4/playlist/static';
 	$("#results").empty();
+	console.log("curating...");
 	$.getJSON(url, {'artist'=input,
 			'api_key': config.apiKey,
 			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit'=true, 'variety'=1, 'results'=10,type='artist-radio' })
@@ -55,7 +57,7 @@
 				$("#results").append(spotifyPlayButton);
 			}
 		})
-		.error( functin() {
+		.error( function() {
 			console.log("bigger whoopsies!")
 		});
   }
@@ -66,7 +68,7 @@ function newSearch(){
 
 function find(){
 	$("#artist").on('keydown',function(evt) {
-		if(ev.keyCode == 13) {
+		if(evt.keyCode == 13) {
 			newSearch();
 		}
 	});
