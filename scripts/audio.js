@@ -151,6 +151,14 @@ javascriptNode.onaudioprocess = function() {
     ctx.clearRect(0, 0, 928, 550);
 
     // set the fill style
+    if(accessed){
+	var colors = bindSliders(currSong);
+	gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
+	gradient.addColorStop(1,'#000000'); //black
+	gradient.addColorStop(0.75,'#0000ff'); //blue
+	gradient.addColorStop(0.25,'#00ffff'); //cyan
+	gradient.addColorStop(0,'#00ff00'); //green
+}
     ctx.fillStyle=gradient;
     drawSpectrum(array);
 }
@@ -174,12 +182,4 @@ function volume(element) { // reduction from [-1, 0]
         gainNode.gain.value = fraction * fraction;
 
     // console.log(gainNode.gain.value);
-
-<<<<<<< HEAD
-VolumeSample.toggle = function() {
-  this.playing ? this.stop() : this.play();
-  this.playing = !this.playing;
-};
-=======
 }
->>>>>>> 454e878917ebfd8c5acc0c98ca5c6f7279236d2e

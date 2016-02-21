@@ -1,10 +1,3 @@
-  function getConfig(){
-	return {
-		apiKey: "KQOXQN3XYFH2F1T96",
-		spotifySpace: "spotify",
-		echoNestHost: "http://developer.echonest.com/",
-	};
- }
 
 //user picks a song to manipulate, invoking this function
 function bindSliders(song){ //might need to add more paramteres
@@ -15,12 +8,26 @@ function bindSliders(song){ //might need to add more paramteres
 	liveness = song.audio_summary.liveness;
 	
 	//map values to color
-	var green, blue, alpha;
-	green = 255 * danceability;
-	blue = 255 * energy;
-	alpha = 255 * liveness;
+	var D, E, L; 
+	D = 255 * danceability;
+	E = 255 * energy;
+	L = 255 * liveness;
+	
+	var oneG = D & 0x0000ff;
+	var oneB = E & 0x00ff00;
+	var oneA = L & 0xff0000;
+	var colorOne = oneG + oneB +oneA;
+	
+	var twoG = D & 0x00ff00;
+	var twoB = E & 0xff0000;
+	var twoA= L & 0x0000ff;
+	var colorTwo = twoG + twoB + twoA;
 
-	return [green,blue,alpha];
+	var threeG = D & 0xff0000;
+	var threeB = E & 0x0000ff;
+	var threeA = L & 0x00ff00;
+	var colorThree = threeG + threeB + threeA;
+	return [colorOne,colorTwo,colorThree];
 }
 
 function playListButton(title, playlist){
