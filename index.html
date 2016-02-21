@@ -8,9 +8,9 @@
     <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.indigo-pink.min.css">
+    <script src="scripts/tools.js"></script>
     <script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"</script>
-    <script src="scripts/tools.js"></script>
   </head>
 
 	<body>
@@ -23,16 +23,16 @@
 				<div id="results"> </div>
 			</div>
      		 	<div id="interact">
-          <div id="sliders">
-            <button id="play" onClick="playSound()">Play</button>
-            <button id="pause" onClick="pauseSound()">Pause</button>
-            <span> <input id="vol" class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
-            <span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
-            <span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
-            <span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
-          </div>
-          <canvas id="canvas" width="928" height="550"></canvas>
-      </div>
+		        	<div id="sliders">
+            				<button id="play" onClick="playSound()">Play</button>
+            				<button id="pause" onClick="pauseSound()">Pause</button>
+            				<span> <input id="vol" class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
+            				<span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
+            				<span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
+            				<span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
+          			</div>
+          			<canvas id="canvas" width="928" height="550"></canvas>
+      			</div>
    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> --> 
     <script>
       $('#sidebar').mouseover(function(){
@@ -48,7 +48,7 @@
     <script src="scripts/jquery-1.12.0.min.js"></script>
     <script src="scripts/audio.js"></script>
   </body>
-  <script type="text/javascript">
+  script type="text/javascript">
 
   jQuery.ajaxSettings.traditional = true;
   var config = getConfig();
