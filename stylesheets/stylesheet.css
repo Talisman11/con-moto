@@ -65,6 +65,8 @@ h1 {
   display: inline-block;
   position: relative;
   float: left;
+  padding-top, padding-bottom: 15px;
+  
   /*display: hidden;*/
 }
 
