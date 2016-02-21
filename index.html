@@ -14,7 +14,7 @@
 			<div id="playlist">
 				<input title = "search" size=20 id="artist" name="artist"/>
 				<button value="find" id="find" name="find">Find</button>
-				<div id="results"></div>
+				<div id="results"> </div>
 			</div>
      		 	<div id="interact">
         			<canvas id="canvas" width="928" height="550"></canvas>
@@ -76,7 +76,7 @@ function newSearch(){
 }
 
 function find(){
-	$("find").on("click", function() {
+	$("#find").on("click", function() {
 		newSearch();
 	});
 }
