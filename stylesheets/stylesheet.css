@@ -35,7 +35,7 @@ h1 {
 #sidebar {
   text-align: center;
   margin-top: inherit;
-  margin-left: 0;
+  margin-left: 5;
   width: 50px;
   height: 550px;
   display: inline-block;
