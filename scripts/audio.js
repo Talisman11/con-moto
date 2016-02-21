@@ -64,7 +64,9 @@ gradient.addColorStop(0.45,'#99ffa3'); //red
 
 // load the sound
 setupAudioNodes();
-loadSound("testing/Crisis.mp3");
+// loadSound("testing/Crisis.mp3");
+var sampleSong = 
+loadSound(sampleSong);
 
 function setupAudioNodes() {
 
@@ -183,13 +185,18 @@ javascriptNode.onaudioprocess = function() {
 
     // set the fill style
     if(accessed){
-	var colors = bindSliders(currSong);
-	gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
-	gradient.addColorStop(1,'#000000'); //black
-	gradient.addColorStop(0.75,'#0000ff'); //blue
-	gradient.addColorStop(0.25,'#00ffff'); //cyan
-	gradient.addColorStop(0,'#00ff00'); //green
-}
+        var colors = bindSliders(currSong);
+        var high_col = colorMod($("#high")); // lighten / transparency?
+        var vol_col = colorMod($("#vol") + colors[0] + high_col);
+        var bass_col = colorMod($("#bass") + colors[1] + high_col);
+        var low_col = colorMod($("#low") + colors[2] + high_col);
+
+        gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
+        gradient.addColorStop(1,'#000000'); //black
+        gradient.addColorStop(0.6, vol_col); //green
+        gradient.addColorStop(0.5, bass_col); //blue
+        gradient.addColorStop(0.45, low_col); //red
+    }
     ctx.fillStyle=gradient;
     drawSpectrum(array);
 }
@@ -204,6 +211,17 @@ function drawSpectrum(array) {
     }
 };
 // ------------------------
+
+function colorMod(element) {
+    var value = element.value;
+    var tint = 0;
+    if (element.id === "vol") {
+        return value / 200;
+    } else {
+        return (value/100) - 0.5;
+    }
+}
+
 function volume(element) { // reduction from [-1, 0]
     var volume = element.value;
     var fraction = parseInt(element.value) / parseInt(element.max);
