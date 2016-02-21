@@ -5,9 +5,43 @@ if (! window.AudioContext) {
     }
     window.AudioContext = window.webkitAudioContext;
 }
+
+window.onload = init;
 var context = new AudioContext();
+
+var bufferLoader;
+
+function init() {
+
+  bufferLoader = new BufferLoader(
+    context,
+    [
+      '/testing/Crisis.mp3',
+      '/testing/Au5-Snowblind.mp3',
+    ],
+    finishedLoading
+    );
+
+  bufferLoader.load();
+}
+
+function finishedLoading(bufferList) {
+  // Create two sources and play them both together.
+  var source1 = context.createBufferSource();
+  var source2 = context.createBufferSource();
+  source1.buffer = bufferList[0];
+  source2.buffer = bufferList[1];
+
+  source1.connect(context.destination);
+  source2.connect(context.destination);
+  // source1.start(0);
+  // source2.start(0);
+}
+
+
 var audioBuffer;
 var sourceNode;
+var gainNode;
 var splitter;
 var analyser, analyser2;
 var javascriptNode;
@@ -20,15 +54,15 @@ var ctx = $("#canvas").get()[0].getContext("2d");
 // create a gradient for the fill. Note the strange
 // offset, since the gradient is calculated based on
 // the canvas, not the specific element we draw
-var gradient = ctx.createLinearGradient(0,0,0,900);
-gradient.addColorStop(1,'#000000');
-gradient.addColorStop(0.75,'#0000ff');
-gradient.addColorStop(0.25,'#00ffff');
-gradient.addColorStop(0,'#00ff00');
+var gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
+gradient.addColorStop(1,'#000000'); //black
+gradient.addColorStop(0.75,'#0000ff'); //blue
+gradient.addColorStop(0.25,'#00ffff'); //cyan
+gradient.addColorStop(0,'#00ff00'); //green
 
 // load the sound
 setupAudioNodes();
-loadSound("testing/Au5-Snowblind.mp3");
+loadSound("testing/Crisis.mp3");
 
 function setupAudioNodes() {
 
@@ -42,11 +76,18 @@ function setupAudioNodes() {
     analyser.smoothingTimeConstant = 0.3;
     analyser.fftSize = 1024;
 
+    // gain node
+    gainNode = context.createGain();
+    gainNode.gain.value = -0.0;
+    console.log(gainNode.gain.value);
+
     // create a buffer source node
     sourceNode = context.createBufferSource();
     sourceNode.connect(analyser);
     analyser.connect(javascriptNode);
 
+    sourceNode.connect(gainNode);
+    gainNode.connect(context.destination);
     sourceNode.connect(context.destination);
 }
 
@@ -68,58 +109,21 @@ function loadSound(url) {
         }, onError);
     }
     request.send();
-
-    // var xhr = createCORSRequest('GET', url);
-
-    // if (!xhr) {
-    //   throw new Error('CORS not supported');
-    // }
-
-    // xhr.onload = function() {
-    //     xhr.addHeader("Access-Control-Allow-Origin", "*");
-
-    //     var responseText = xhr.responseText;
-    //     console.log(responseText);
-    //     // process the response.
-    //     context.decodeAudioData(xhr.response, function(buffer) {
-    //         playSound(buffer);
-    //     });
-
-    // };
-
-    // xhr.onerror = function() {
-    //   console.log('There was an error!');
-    // };
-
-    // xhr.send();
-
 }
 var startOffset = 0;
 var startTime = 0;
-// DO NOT TOUCH THIS METHOD
-var first = false;
 function playSound() {
     startTime = context.currentTime;
-    if (first) {
+    sourceNode = context.createBufferSource();
+    sourceNode.buffer = global_buffer;
+    sourceNode.loop = true;
+    sourceNode.connect(analyser);
+    sourceNode.connect(javascriptNode);
+    sourceNode.connect(gainNode);
 
-        sourceNode.loop = true;
-        sourceNode.connect(analyser);
-        analyser.connect(javascriptNode);
-
-        sourceNode.connect(context.destination);
-        // Start playback, but make sure we stay in bound of the buffer.
-        sourceNode.start(0, startOffset % global_buffer.duration);
-    } else {
-        sourceNode = context.createBufferSource();
-        sourceNode.buffer = global_buffer;
-        sourceNode.loop = true;
-        sourceNode.connect(analyser);
-        analyser.connect(javascriptNode);
-
-        sourceNode.connect(context.destination);
-        // Start playback, but make sure we stay in bound of the buffer.
-        sourceNode.start(0, startOffset % global_buffer.duration);
-    }
+    gainNode.connect(context.destination);
+    sourceNode.connect(context.destination);
+    sourceNode.start(0, startOffset % global_buffer.duration);
 }
 
 function pauseSound() {
@@ -147,65 +151,33 @@ javascriptNode.onaudioprocess = function() {
     // set the fill style
     ctx.fillStyle=gradient;
     drawSpectrum(array);
-
 }
 
 function drawSpectrum(array) {
+    var scale = (gainNode.gain.value/2) + 1/2;
     for ( var i = 0; i < (array.length); i++ ){
         var value = array[i];
 
-        ctx.fillRect(i*5,550-value,4,550);
+        ctx.fillRect(i*5,600-value,4,300*scale);
         // console.log([i,value])
     }
 };
 // ------------------------
+function volume(element) { // reduction from [-1, 0]
+    var volume = element.value;
+    var fraction = parseInt(element.value) / parseInt(element.max);
+    if (fraction < 0) {
+        gainNode.gain.value = -fraction * fraction;
+    } else 
+        gainNode.gain.value = fraction * fraction;
 
-function showValue(newValue)
-{
-    this.innerHTML=newValue;
-}
+    // console.log(gainNode.gain.value);
 
-
-var VolumeSample = {
-};
-
-// Gain node needs to be mutated by volume control.
-VolumeSample.gainNode = null;
-
-VolumeSample.play = function() {
-  if (!context.createGain)
-    context.createGain = context.createGainNode;
-  this.gainNode = context.createGain();
-  var source = context.createBufferSource();
-  source.buffer = BUFFERS.techno;
-
-  // Connect source to a gain node
-  source.connect(this.gainNode);
-  // Connect gain node to destination
-  this.gainNode.connect(context.destination);
-  // Start playback in a loop
-  source.loop = true;
-  if (!source.start)
-    source.start = source.noteOn;
-  source.start(0);
-  this.source = source;
-};
-
-VolumeSample.changeVolume = function(element) {
-  var volume = element.value;
-  var fraction = parseInt(element.value) / parseInt(element.max);
-  // Let's use an x*x curve (x-squared) since simple linear (x) does not
-  // sound as good.
-  this.gainNode.gain.value = fraction * fraction;
-};
-
-VolumeSample.stop = function() {
-  if (!this.source.stop)
-    this.source.stop = source.noteOff;
-  this.source.stop(0);
-};
-
+<<<<<<< HEAD
 VolumeSample.toggle = function() {
   this.playing ? this.stop() : this.play();
   this.playing = !this.playing;
 };
+=======
+}
+>>>>>>> 454e878917ebfd8c5acc0c98ca5c6f7279236d2e
