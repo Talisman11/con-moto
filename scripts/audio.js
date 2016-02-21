@@ -1,5 +1,3 @@
-
-// create the audio context (chrome only for now)
 // create the audio context (chrome only for now)
 if (! window.AudioContext) {
     if (! window.webkitAudioContext) {
@@ -7,10 +5,46 @@ if (! window.AudioContext) {
     }
     window.AudioContext = window.webkitAudioContext;
 }
+
+window.onload = init;
 var context = new AudioContext();
+
+var bufferLoader;
+
+function init() {
+
+  bufferLoader = new BufferLoader(
+    context,
+    [
+      '/testing/Crisis.mp3',
+      '/testing/Au5-Snowblind.mp3',
+    ],
+    finishedLoading
+    );
+
+  bufferLoader.load();
+}
+
+function finishedLoading(bufferList) {
+  // Create two sources and play them both together.
+  var source1 = context.createBufferSource();
+  var source2 = context.createBufferSource();
+  source1.buffer = bufferList[0];
+  source2.buffer = bufferList[1];
+
+  source1.connect(context.destination);
+  source2.connect(context.destination);
+  // source1.start(0);
+  // source2.start(0);
+}
+
+
 var audioBuffer;
 var sourceNode;
-var splitter;
+var gainNode;
+var bass;
+var lowpass;
+var highpass;
 var analyser, analyser2;
 var javascriptNode;
 
@@ -22,15 +56,17 @@ var ctx = $("#canvas").get()[0].getContext("2d");
 // create a gradient for the fill. Note the strange
 // offset, since the gradient is calculated based on
 // the canvas, not the specific element we draw
-var gradient = ctx.createLinearGradient(0,0,0,900);
-gradient.addColorStop(1,'#000000');
-gradient.addColorStop(0.75,'#0000ff');
-gradient.addColorStop(0.25,'#00ffff');
-gradient.addColorStop(0,'#00ff00');
+var gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
+gradient.addColorStop(1,'#000000'); //black
+gradient.addColorStop(0.6,'#9966ff'); //green
+gradient.addColorStop(0.5,'#1a75ff'); //blue
+gradient.addColorStop(0.45,'#99ffa3'); //red
 
 // load the sound
 setupAudioNodes();
-loadSound("testing/Au5-Snowblind.mp3");
+// loadSound("testing/Crisis.mp3");
+var sampleSong = 
+loadSound(sampleSong);
 
 function setupAudioNodes() {
 
@@ -43,16 +79,46 @@ function setupAudioNodes() {
     analyser = context.createAnalyser();
     analyser.smoothingTimeConstant = 0.3;
     analyser.fftSize = 1024;
+    // biquad filter
+    lowpass = context.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 440; // cutoff at 440hz
+
+    highpass = context.createBiquadFilter();
+    highpass.type = 'highpass';
+    highpass.frequency.value = 20000; // cutoff at 20Khz
+
+    // bass
+    bass = context.createBiquadFilter();
+    bass.type = 'lowshelf';
+    bass.frequency.value = 440; //assume < 440 needs boost
+    bass.gain.value = -1;
+
+    // gain node
+    gainNode = context.createGain();
+    gainNode.gain.value = 0.0;
 
     // create a buffer source node
     sourceNode = context.createBufferSource();
     sourceNode.connect(analyser);
     analyser.connect(javascriptNode);
 
+    sourceNode.connect(lowpass);
+    sourceNode.connect(highpass);
+    lowpass.connect(context.destination);
+    highpass.connect(context.destination);
+
+    sourceNode.connect(bass);
+    bass.connect(context.destination);
+
+    sourceNode.connect(gainNode);
+    gainNode.connect(context.destination);
+
     sourceNode.connect(context.destination);
 }
 
 // load the specified sound
+var global_buffer;
 function loadSound(url) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);
@@ -63,44 +129,44 @@ function loadSound(url) {
 
         // decode the data
         context.decodeAudioData(request.response, function(buffer) {
-            // when the audio is decoded play the sound
-            playSound(buffer);
+            global_buffer = buffer;
+            sourceNode.buffer = buffer;
+            playSound();
         }, onError);
     }
     request.send();
+}
+var startOffset = 0;
+var startTime = 0;
+function playSound() {
+    startTime = context.currentTime;
+    sourceNode = context.createBufferSource();
+    sourceNode.buffer = global_buffer;
+    sourceNode.loop = true;
+    sourceNode.connect(analyser);
+    sourceNode.connect(javascriptNode);
 
-    // var xhr = createCORSRequest('GET', url);
+    sourceNode.connect(lowpass);
+    sourceNode.connect(highpass);
+    lowpass.connect(context.destination);
+    highpass.connect(context.destination);
 
-    // if (!xhr) {
-    //   throw new Error('CORS not supported');
-    // }
+    sourceNode.connect(bass);
+    bass.connect(context.destination);
 
-    // xhr.onload = function() {
-    //     xhr.addHeader("Access-Control-Allow-Origin", "*");
-
-    //     var responseText = xhr.responseText;
-    //     console.log(responseText);
-    //     // process the response.
-    //     context.decodeAudioData(xhr.response, function(buffer) {
-    //         playSound(buffer);
-    //     });
-
-    // };
-
-    // xhr.onerror = function() {
-    //   console.log('There was an error!');
-    // };
-
-    // xhr.send();
-
+    sourceNode.connect(gainNode);
+    gainNode.connect(context.destination);
+    
+    sourceNode.connect(context.destination);
+    sourceNode.start(0, startOffset % global_buffer.duration);
 }
 
-function playSound(buffer) {
-    sourceNode.buffer = buffer;
-    sourceNode.start(0);
+function pauseSound() {
+    sourceNode.stop();
+    // Measure how much time passed since the last pause.
+    startOffset += context.currentTime - startTime;
 }
 
-// log if an error occurs
 function onError(e) {
     console.log(e);
 }
@@ -118,88 +184,81 @@ javascriptNode.onaudioprocess = function() {
     ctx.clearRect(0, 0, 928, 550);
 
     // set the fill style
+    if(playlist.hasOwnProperty("songs")){
+    	playlist.forEach(function(song){
+            var colors = bindSliders(song);
+            var high_col = colorMod($("#high")); // lighten / transparency?
+            var vol_col = colorMod($("#vol") + colors[0] + high_col);
+            var bass_col = colorMod($("#bass") + colors[1] + high_col);
+            var low_col = colorMod($("#low") + colors[2] + high_col);
+
+            gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
+            gradient.addColorStop(1,'#000000'); //black
+            gradient.addColorStop(0.6, vol_col); //green
+            gradient.addColorStop(0.5, bass_col); //blue
+            gradient.addColorStop(0.45, low_col); //red
+    	});
+    }
     ctx.fillStyle=gradient;
     drawSpectrum(array);
-
 }
 
 function drawSpectrum(array) {
+    var scale = (gainNode.gain.value/2) + 1/2;
     for ( var i = 0; i < (array.length); i++ ){
         var value = array[i];
 
-        ctx.fillRect(i*5,550-value,4,300);
+        ctx.fillRect(i*5,600-value,4,300*scale);
         // console.log([i,value])
     }
 };
 // ------------------------
 
-// var FilterSample = {
-//   FREQ_MUL: 7000,
-//   QUAL_MUL: 30,
-//   playing: false
-// };
+function colorMod(element) {
+    var value = element.value;
+    var tint = 0;
+    if (element.id === "vol") {
+        return value / 200;
+    } else {
+        return (value/100) - 0.5;
+    }
+}
 
-// FilterSample.play = function() {
-//   // Create the source.
-//   var source = context.createBufferSource();
-//   source.buffer = BUFFERS.techno;
-//   // Create the filter.
-//   var filter = context.createBiquadFilter();
-//   //filter.type is defined as string type in the latest API. But this is defined as number type in old API.
-//   filter.type = (typeof filter.type === 'string') ? 'lowpass' : 0; // LOWPASS
-//   filter.frequency.value = 5000;
-//   // Connect source to filter, filter to destination.
-//   source.connect(filter);
-//   filter.connect(context.destination);
-//   // Play!
-//   if (!source.start)
-//     source.start = source.noteOn;
-//   source.start(0);
-//   source.loop = true;
-//   // Save source and filterNode for later access.
-//   this.source = source;
-//   this.filter = filter;
-// };
+function volume(element) { // reduction from [-1, 0]
+    var volume = element.value;
+    var fraction = parseInt(element.value) / parseInt(element.max);
+    if (fraction < 0) {
+        gainNode.gain.value = -fraction * fraction;
+    } else 
+        gainNode.gain.value = fraction * fraction;
 
-// FilterSample.stop = function() {
-//   if (!this.source.stop)
-//     this.source.stop = source.noteOff;
-//   this.source.stop(0);
-//   this.source.noteOff(0);
-// };
+    //console.log(gainNode.gain.value);
+}
 
-// FilterSample.toggle = function() {
-//   this.playing ? this.stop() : this.play();
-//   this.playing = !this.playing;
-// };
+function bassMod(element) {
+    var val = element.value * 0.1;
+    bass.gain.value = -5 + val;
+    console.log(bass.gain.value);
+}
 
-// FilterSample.changeFrequency = function(element) {
-//   // Clamp the frequency between the minimum value (40 Hz) and half of the
-//   // sampling rate.
-//   var minValue = 40;
-//   var maxValue = context.sampleRate / 2;
-//   // Logarithm (base 2) to compute how many octaves fall in the range.
-//   var numberOfOctaves = Math.log(maxValue / minValue) / Math.LN2;
-//   // Compute a multiplier from 0 to 1 based on an exponential scale.
-//   var multiplier = Math.pow(2, numberOfOctaves * (element.value - 1.0));
-//   // Get back to the frequency value between min and max.
-//   this.filter.frequency.value = maxValue * multiplier;
-// };
+function lowFreq(element) {
+    var minValue = 440;
+    var maxValue = context.sampleRate / 2;
+    // Logarithm (base 2) to compute how many octaves fall in the range.
+    var numberOfOctaves = Math.log(maxValue / minValue) / Math.LN2;
+    // Compute a multiplier from 0 to 1 based on an exponential scale.
+    var multiplier = Math.pow(2, numberOfOctaves * (element.value/100 - 1.0));
+    // Get back to the frequency value between min and max.
+    lowpass.frequency.value = maxValue * multiplier;
+}
 
-// FilterSample.changeQuality = function(element) {
-//   this.filter.Q.value = element.value * this.QUAL_MUL;
-// };
-
-// FilterSample.toggleFilter = function(element) {
-//   this.source.disconnect(0);
-//   this.filter.disconnect(0);
-//   // Check if we want to enable the filter.
-//   if (element.checked) {
-//     // Connect through the filter.
-//     this.source.connect(this.filter);
-//     this.filter.connect(context.destination);
-//   } else {
-//     // Otherwise, connect directly.
-//     this.source.connect(context.destination);
-//   }
-// };
+function highFreq(element) {
+    var minValue = 12000;
+    var maxValue = context.sampleRate / 2;
+    // Logarithm (base 2) to compute how many octaves fall in the range.
+    var numberOfOctaves = Math.log(maxValue / minValue) / Math.LN2;
+    // Compute a multiplier from 0 to 1 based on an exponential scale.
+    var multiplier = Math.pow(2, numberOfOctaves * (element.value/100 - 1.0));
+    // Get back to the frequency value between min and max.
+    highpass.frequency.value = maxValue * multiplier;
+}
