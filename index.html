@@ -47,7 +47,7 @@
 	console.log("curating...");
 	$.getJSON(url, {'artist': input,
 			'api_key': config.apiKey,
-			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit'=true, 'variety'=1, 'results'=10,type='artist-radio' })
+			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit':true, 'variety':1, 'results':10,type:'artist-radio' })
 		.done(function(data){
 			if( ! (songs in data.response)){
 				console.log("whoopsies");
