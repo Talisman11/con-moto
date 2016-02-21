@@ -2,7 +2,7 @@
 	return {
 		apiKey: "KQOXQN3XYFH2F1T96",
 		spotifySpace: "spotify",
-		echoNestHost: "http://developer.echonest.com/"
+		echoNestHost: "http://developer.echonest.com/",
 	};
  }
 
