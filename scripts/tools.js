@@ -8,17 +8,21 @@
 
 
 function playListButton(title, playlist){
-	var link = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:TITLE:TRACKS" style="width:350px; height:250px;" frameborder="0"></iframe>';
+	var link = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:TITLE:TRACKS" style="width:350px; height:500px;" frameborder="0"></iframe>';
 	var ids = [];
 	playlist.forEach(function(song) {
-		var split = song.tracks[0].foreign_id.split[0](':');
-		ids.push(split[split.length-1]);
+		var split = fidtoSpid(song.tracks[0].foreign_id);
+		ids.push(split);
 	});
 	var tracks = ids.join(',');
 	var embed = link.replace('TRACKS',tracks);
 	embed = embed.replace('TITLE',title);
 	var li = $("<span>").html(embed);
 	return $("<span>").html(embed);
+}
+function fidtoSpid(field){
+	var new_field = field.split(':');
+	return field[field.length-1];
 }
 
 function getSpotifyPlayer(inPlaylist, callback) {
@@ -33,8 +37,8 @@ function getSpotifyPlayer(inPlaylist, callback) {
             var tid = fidToSpid(song.tracks[0].foreign_id);
             tids.push(tid);
         });
-
-        $.getJSON("https://api.spotify.com/v1/tracks/", { 'ids': tids.join(',')}) 
+//	debugger;
+$.getJSON("https://api.spotify.com/v1/tracks/", {'ids': tids.join(',')}) 
             .done(function(data) {
                 console.log('sptracks', tids, data);
                 data.tracks.forEach(function(track, i) {

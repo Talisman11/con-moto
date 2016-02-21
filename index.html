@@ -8,10 +8,10 @@
     <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.indigo-pink.min.css">
-    <script src="scripts/tools.js"></script>
     <script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> 
-    <script src="scripts/tools.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> -->
+    <script src="scripts/jquery-1.12.0.min.js"></script>
+    <!--<script src="scripts/tools.js"></script>-->
   </head>
 
 	<body>
@@ -19,7 +19,7 @@
      		<div id="sidebar"></div>
       		<div id="panels">
 			<div id="playlist">
-				<input title = "search" size=20 id="artist" name="artist"/>
+				<span><input title = "search" size=20 id="artist" name="artist"/></span>
 				<button value="find" id="find" name="find">Find</button>
 				<div id="results"> </div>
 			</div>
@@ -45,8 +45,8 @@
         });
       </script>
     <script src="scripts/buffer-loader.js"></script>
-    <script src="scripts/jquery-1.12.0.min.js"></script>
     <script src="scripts/audio.js"></script>
+    <script src="scripts/tools.js"></script>
 	  </body>
   <script type="text/javascript">
 
@@ -54,10 +54,33 @@
   var config = getConfig();
 
   function getArtist(input, wandering, variety){
-	var url = config.echoNestHost + '/api/v4/playlist/static';
+	var url = config.echoNestHost + 'api/v4/playlist/static';
 	$("#results").empty();
 	console.log("curating...");
-	$.getJSON(url, {'artist': input,
+	$.ajax({
+		url: url,
+		type: "GET",
+		dataType: "json",
+		crossDomain: true,
+		data: {'artist': input,
+ 			'api_key': config.apiKey,
+ 			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit':true, 'variety':1, 'results':10, type:'artist-radio', },
+		success: function(data){
+			if(!(data.response.hasOwnProperty("songs"))){
+                           	console.log("whoopsies");
+			} else {
+ 				var title = "Results for" + input;
+ 				var spotifyPlayButton = playListButton(title, data.response.songs);
+				console.log(data.response.songs);
+ 				$("#results").append(spotifyPlayButton);
+			}
+
+		},
+		error: function(err, res){
+			console.log(err);
+		}
+	});
+/*	$.getJSON(url, {'artist': input,
 			'api_key': config.apiKey,
 			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit':true, 'variety':1, 'results':10, type:'artist-radio', })
 		.done(function(data){
@@ -72,7 +95,9 @@
 		.error( function() {
 			console.log("bigger whoopsies!")
 		});
-  }
+*/
+ 
+}
 function newSearch(){
 	var artist = $("#artist").val();
 	getArtist(artist,false,.2);
