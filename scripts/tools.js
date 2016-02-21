@@ -16,13 +16,14 @@ function bindSliders(song){ //might need to add more paramteres
 	var oneG = D & 0x0000ff;
 	var oneB = E & 0x00ff00;
 	var oneA = L & 0xff0000;
+	console.log("Are you hex? " + oneA);
 	var colorOne = oneG + oneB +oneA;
-	
+	console.log(colorOne);	
 	var twoG = D & 0x00ff00;
 	var twoB = E & 0xff0000;
 	var twoA= L & 0x0000ff;
 	var colorTwo = twoG + twoB + twoA;
-
+	console.log("This is color two " + colorTwo);
 	var threeG = D & 0xff0000;
 	var threeB = E & 0x0000ff;
 	var threeA = L & 0x00ff00;
