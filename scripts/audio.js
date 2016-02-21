@@ -82,7 +82,7 @@ function setupAudioNodes() {
     // biquad filter
     lowpass = context.createBiquadFilter();
     lowpass.type = 'lowpass';
-    lowpass.frequency.value = 440; // cutoff at 440hz
+    // lowpass.frequency.value = 440; // cutoff at 440hz
 
     highpass = context.createBiquadFilter();
     highpass.type = 'highpass';
@@ -96,7 +96,6 @@ function setupAudioNodes() {
 
     // gain node
     gainNode = context.createGain();
-    gainNode.gain.value = 0.0;
 
     // create a buffer source node
     sourceNode = context.createBufferSource();
@@ -210,8 +209,11 @@ javascriptNode.onaudioprocess = function() {
 
         });
     }
-    gainNode.gain.value = 0.0;
     ctx.fillStyle=gradient;
+
+    gainNode.gain.value = -1.0;
+    gainNode.gain.value = 0.0;
+
     drawSpectrum(array);
 }
 
@@ -257,7 +259,7 @@ function volume(element) { // reduction from [-1, 0]
 
 function bassMod(element) {
     var val = element.value * 0.1;
-    bass.gain.value = -5 + val;
+    bass.gain.value = -5.0 + val;
     console.log(bass.gain.value);
 }
 
