@@ -42,7 +42,7 @@ function finishedLoading(bufferList) {
 var audioBuffer;
 var sourceNode;
 var gainNode;
-var splitter;
+var filter;
 var analyser, analyser2;
 var javascriptNode;
 
@@ -75,7 +75,9 @@ function setupAudioNodes() {
     analyser = context.createAnalyser();
     analyser.smoothingTimeConstant = 0.3;
     analyser.fftSize = 1024;
-
+    // biquad filter
+    filter = context.createBiquadFilter();
+    
     // gain node
     gainNode = context.createGain();
     gainNode.gain.value = -0.0;
