@@ -47,7 +47,7 @@
 			'bucket': 'audio_summary', 'limit'=true, 'variety'=1, 'results'=10, })
 		.done(function(data){
 			var title = "Results for" + artist;
-			var spotifyPlayButton = playlistButton(title, data.response.songs);
+			var spotifyPlayButton = playListButton(title, data.response.songs);
 			$("#results").append(spotifyPlayButton);
 		}
   }
