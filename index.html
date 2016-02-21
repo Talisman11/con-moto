@@ -27,10 +27,10 @@
 		        	<div id="sliders">
             				<button id="play" onClick="playSound()">Play</button>
             				<button id="pause" onClick="pauseSound()">Pause</button>
-            				<span> <input id="vol" class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
-            				<span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
-            				<span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
-            				<span> <input class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="VolumeSample.changeVolume(this)"> </span>
+            				<span> <input id="vol" class="mdl-slider mdl-js-slider" type="range" min="-100" max="100" value="0" tabindex="0" oninput="volume(this)"> </span>
+            				<span> <input id="" class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="changeVolume(this)"> </span>
+            				<span> <input id=""class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="changeVolume(this)"> </span>
+            				<span> <input id="noise" class="mdl-slider mdl-js-slider" type="range" min="0" max="100" value="0" tabindex="0" oninput="volume(this)"> </span>
           			</div>
           			<canvas id="canvas" width="928" height="550"></canvas>
       			</div> 
@@ -44,7 +44,7 @@
           $('#interact').animate({width: '97%'}, 500);
         });
       </script>
-
+    <script src="scripts/buffer-loader.js"></script>
     <script src="scripts/jquery-1.12.0.min.js"></script>
     <script src="scripts/audio.js"></script>
 	  </body>
