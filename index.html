@@ -1,80 +1,30 @@
 <!DOCTYPE html>
 <html lang="en-us">
+<<<<<<< HEAD
   
   <head>
     <meta charset="UTF-8">
     <title>con moto</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-    <!--<link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">-->
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.indigo-pink.min.css">
-<script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.1.1/material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> 
+    <script src="scripts/tools.js"></script>
   </head>
-    
-	<body>    
-    <!--<section class="page-header">
-      <h1 class="project-name">Con-moto</h1>
-      <h2 class="project-tagline">Minimalist abstract musical experience</h2>
-      <a href="https://github.com/unFearing/con-moto" class="btn">View on GitHub</a>
-    </section>-->
 
-     
-    <h1>c o n  m o t o</h1>
-     
-    <div id="sidebar"></div>
-      
-    <div id="panels">
-      <div id="playlist">
-      <!--<div id="player"></div>-->
-      <iframe id="ytplayer" type="text/html" width="480" height="360" src="https://www.youtube.com/embed/?listType=playlist&list=FLlVrJwcIy7saPcGc1nct80A" frameborder="0"></iframe>
-      <script>
-	  var tag = document.createElement('script');
-
-	  tag.src = "https://www.youtube.com/iframe_api"
-	  var firstScriptTag = document.getElementsByTagName('script')[0];
-          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-	  var player;
-          function onYouTubeIframeAPIReady(){
-			player = new YT.Player('player',{
-				height: '360',
-				width:	'480',
-	//			loadPlaylist: {
-	//				listType: "playlist",
-	//				list: "FLlVrJwcIy7saPcGc1nct80A",
-					
-	//			},	
-				events: {
-				    'onReady': onPlayerReady,
-				    'onStateChange': onPlayerStateChange
-				},
-			});
-	}
-	  done = false;
-	  function onPlayerStateChange(event){
-		if(event.data == YT.PlayerState.PLAYING) {
-			event.nextVideo();
-	}	
-	//	 if (event.data == YT.PlayerState.PLAYING && !done) {
-         // setTimeout(stopVideo, 6000);
-          //done = true;
-        }  
-	}
-	  function onPlayerReady(event) {
-		event.target.loadPlaylist("FLlVrJwcIy7saPcGc1nct80A")
-		event.target.playVideo();
-	  }
-	function stopVideo() {
-		player.stopVideo();
-	}
-	</script>
-      </div>
-
-      <div id="interact">
+	<body>
+		<h1>c o n  m o t o</h1>
+     		<div id="sidebar"></div>
+      		<div id="panels">
+			<div id="playlist">
+				<input title = "search" size=20 id="artist" name="artist"/>
+				<button value="find" id="find" name="find">Find</button>
+				<div id="results"> </div>
+			</div>
+     		 	<div id="interact">
           <div id="sliders">
             <button id="play" onClick="playSound()">Play</button>
             <button id="pause" onClick="pauseSound()">Pause</button>
@@ -85,10 +35,7 @@
           </div>
           <canvas id="canvas" width="928" height="550"></canvas>
       </div>
-      
-    </div>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>  
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> --> 
     <script>
       $('#sidebar').mouseover(function(){
           $('#playlist').animate({width: '31%'}, 500);
@@ -99,15 +46,55 @@
           $('#interact').animate({width: '97%'}, 500);
         });
       </script>
-      
 
     <script src="scripts/jquery-1.12.0.min.js"></script>
     <script src="scripts/audio.js"></script>
-      
-      
   </body>
+  <script type="text/javascript">
 
-    
+  jQuery.ajaxSettings.traditional = true;
+  var config = getConfig();
+
+  function getArtist(input, wandering, variety){
+	var url = config.echoNestHost + '/api/v4/playlist/static';
+	$("#results").empty();
+	console.log("curating...");
+	$.getJSON(url, {'artist': input,
+			'api_key': config.apiKey,
+			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit':true, 'variety':1, 'results':10, type:'artist-radio', })
+		.done(function(data){
+			if( ! (songs in data.response)){
+				console.log("whoopsies");
+			} else {
+				var title = "Results for" + input;
+				var spotifyPlayButton = playListButton(title, data.response.songs);
+				$("#results").append(spotifyPlayButton);
+			}
+		})
+		.error( function() {
+			console.log("bigger whoopsies!")
+		});
+  }
+function newSearch(){
+	var artist = $("#artist").val();
+	getArtist(artist,false,.2);
+}
+
+function find(){
+	$("#artist").on('keydown',function(evt) {
+		if(evt.keyCode == 13) {
+			newSearch();
+		}
+	});
+	$("#find").on("click", function() {
+		newSearch();
+	});
+}
+
+$(document).ready(function() {
+	find();
+});
+  </script>
 </html>
 
 
