@@ -40,25 +40,36 @@
   jQuery.ajaxSettings.traditional. = true;
   var config = getConfig();
 
-  function getArtist(input){
+  function getArtist(input, wandering, variety){
 	var url=config.echoNestHost + '/api/v4/playlist/static';
 	$("#results").empty();
 	$.getJSON(url, {'artist'=input,
 			'api_key': config.apiKey,
-			'bucket': 'audio_summary', 'limit'=true, 'variety'=1, 'results'=10, })
+			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit'=true, 'variety'=1, 'results'=10,type='artist-radio' })
 		.done(function(data){
-			var title = "Results for" + input;
-			var spotifyPlayButton = playListButton(title, data.response.songs);
-			$("#results").append(spotifyPlayButton);
-		}
+			if( ! (songs in data.response)){
+				console.log("whoopsies");
+			} else {
+				var title = "Results for" + input;
+				var spotifyPlayButton = playListButton(title, data.response.songs);
+				$("#results").append(spotifyPlayButton);
+			}
+		})
+		.error( functin() {
+			console.log("bigger whoopsies!")
+		});
   }
-}
 function newSearch(){
 	var artist = $("#artist").val();
-	getArtist(artist);
+	getArtist(artist,false,.2);
 }
 
 function find(){
+	$("#artist").on('keydown',function(evt) {
+		if(ev.keyCode == 13) {
+			newSearch();
+		}
+	});
 	$("#find").on("click", function() {
 		newSearch();
 	});
