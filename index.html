@@ -38,10 +38,16 @@
       $('#sidebar').mouseover(function(){
           $('#playlist').animate({width: '31%'}, 500);
           $('#interact').animate({width: '66%'}, 500);
+          $('#artist').show();
+          $('#find').show();
+          $('#results').show();
         });
       $('#playlist').mouseleave(function(){
           $('#playlist').animate({width: '0%'}, 500);
           $('#interact').animate({width: '97%'}, 500);
+          $('#artist').hide({}, 500);
+          $('#find').hide({}, 500);
+          $('#results').hide({}, 500);
         });
       </script>
    <!-- <script src="scripts/base.js"></script>-->
@@ -50,5 +56,4 @@
     <script src="scripts/audio.js"></script>
        </body>
 </html>
-
 

@@ -7,7 +7,7 @@ html {
     border: 0px;
     margin: 0px;
     height: auto;
-    font-family: "Varela Round", sans-serif;
+    font-family: 'Varela Round', sans-serif;
     font-size: 1.7em;
     line-height: 1;
     color: #6c7993; 
@@ -30,20 +30,23 @@ h1 {
   margin-bottom: 2%;
   text-align: center;
   vertical-align: center;
+  font-family: 'Varela Round', sans-serif;
 }
 
 #sidebar {
   text-align: center;
   margin-top: inherit;
-  margin-left: 5;
-  width: 50px;
+  margin-left: 0;
+  width: 100px;
   height: 550px;
   display: inline-block;
   /*background-color: red;*/
   position: absolute;
 }
 
-
+#artist, #find, #results {
+  display: none;
+}
 
 #panels {
   text-align: center;
@@ -90,6 +93,30 @@ h1 {
   position: relative;
   display: inline;
   -webkit-box-reflect: below 5px -webkit-linear-gradient(top, transparent, transparent 50%, rgba(255,255,255,0.2));
+
+}
+
+#play, #pause {
+  margin: 20px;
+  border: 2px solid #bbbbc3;
+  border-radius: 4px;
+  background-color: rgb(187, 187, 195);
+  color: #787887;
+  font-size: 1.1em;
+  
+  transition: all .2s ease;
+    -o-transition: all .2s ease;
+    -moz-transition: all .2s ease;
+    -webkit-transition: all .2s ease;
+}
+
+#play:hover, #pause:hover {
+  background-color: rgba(187, 187, 195, 0.6);
+  
+  transition: all .4s ease;
+    -o-transition: all .4s ease;
+    -moz-transition: all .4s ease;
+    -webkit-transition: all .4s ease;
 }
 
 #sliders {
@@ -105,7 +132,9 @@ h1 {
 .mdl-slider__container {
 
   margin-top: 6px;
-  margin-bottom: 20px;
+
+  margin-bottom: 15px;
+
 }
 
 #results{
@@ -119,11 +148,9 @@ h1 {
 #sidebar:hover {
   margin-left: -100px;
 }
-
 #sidebar:hover #playlist {
   width: 20%
 }
-
 #sidebar:hover #interact {
   width: 75%;
 } */
