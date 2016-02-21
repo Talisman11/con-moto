@@ -6,7 +6,7 @@
     		<meta name="viewport" content="width=device-width, initial-scale=1">
     		<link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     		<link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
-		<script src="/scripts/tools.js"></script>
+		<script src="scripts/tools.js"></script>
 	</head>   
 	<body>
 		<h1>c o n  m o t o</h1>
@@ -47,7 +47,7 @@
 	console.log("curating...");
 	$.getJSON(url, {'artist': input,
 			'api_key': config.apiKey,
-			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit':true, 'variety':1, 'results':10,type:'artist-radio' })
+			'bucket': ['id:' + config.spotifySpace, 'tracks'], 'limit':true, 'variety':1, 'results':10, type:'artist-radio', })
 		.done(function(data){
 			if( ! (songs in data.response)){
 				console.log("whoopsies");
