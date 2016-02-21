@@ -46,14 +46,14 @@
 			'api_key': config.apiKey,
 			'bucket': 'audio_summary', 'limit'=true, 'variety'=1, 'results'=10, })
 		.done(function(data){
-			var title = "Results for" + artist;
+			var title = "Results for" + input;
 			var spotifyPlayButton = playListButton(title, data.response.songs);
 			$("#results").append(spotifyPlayButton);
 		}
   }
   function getConfig(){
 	return {
-		apiKey: "KQOXQN3XYFH2F1T96"
+		apiKey: "KQOXQN3XYFH2F1T96",
 		echoNestHost: "http://developer.echonest.com/"
 	};
   }
