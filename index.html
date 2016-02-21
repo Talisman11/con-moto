@@ -6,6 +6,7 @@
     		<meta name="viewport" content="width=device-width, initial-scale=1">
     		<link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     		<link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+		<script src="/scripts/tools.js"></script>
 	</head>   
 	<body>
 		<h1>c o n  m o t o</h1>
@@ -51,24 +52,6 @@
 			$("#results").append(spotifyPlayButton);
 		}
   }
-  function getConfig(){
-	return {
-		apiKey: "KQOXQN3XYFH2F1T96",
-		echoNestHost: "http://developer.echonest.com/"
-	};
-  }
-  function playListButton(title, playlist){
-	var link = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:TITLE:TRACKS" style="width:350px; height:250px;" frameborder="0"></iframe>';
-	var ids = [];
-	playlist.forEach(function(song) {
-		var split = song.split(':');
-		ids.push(split[split.length-1]);
-	});
-	var tracks = ids.join(',');
-	var embed = link.replace('TRACKS',tracks);
-	embed = embed.replace('TITLE',title);
-	var li = $("<span>").html(embed);
-	return $("<span>").html(embed);
 }
 function newSearch(){
 	var artist = $("#artist").val();
