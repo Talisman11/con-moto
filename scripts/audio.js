@@ -6,7 +6,7 @@ if (! window.AudioContext) {
     window.AudioContext = window.webkitAudioContext;
 }
 
-window.onload = init;
+// window.onload = init;
 var context = new AudioContext();
 
 var bufferLoader;
@@ -65,7 +65,7 @@ gradient.addColorStop(0.45,'#99ffa3'); //red
 // load the sound
 setupAudioNodes();
 // loadSound("testing/Crisis.mp3");
-var sampleSong = 
+var sampleSong = "testing/Dereck Recay - Dream Way (Original Mix).mp3";
 loadSound(sampleSong);
 
 function setupAudioNodes() {
@@ -82,7 +82,7 @@ function setupAudioNodes() {
     // biquad filter
     lowpass = context.createBiquadFilter();
     lowpass.type = 'lowpass';
-    lowpass.frequency.value = 440; // cutoff at 440hz
+    // lowpass.frequency.value = 440; // cutoff at 440hz
 
     highpass = context.createBiquadFilter();
     highpass.type = 'highpass';
@@ -96,7 +96,6 @@ function setupAudioNodes() {
 
     // gain node
     gainNode = context.createGain();
-    gainNode.gain.value = 0.0;
 
     // create a buffer source node
     sourceNode = context.createBufferSource();
@@ -184,23 +183,42 @@ javascriptNode.onaudioprocess = function() {
     ctx.clearRect(0, 0, 928, 550);
 
     // set the fill style
-    if(playlist.hasOwnProperty("songs")){
+    if(playlist != null){
     	playlist.forEach(function(song){
             var colors = bindSliders(song);
-            var high_col = colorMod($("#high")); // lighten / transparency?
-            var vol_col = colorMod($("#vol") + colors[0] + high_col);
-            var bass_col = colorMod($("#bass") + colors[1] + high_col);
-            var low_col = colorMod($("#low") + colors[2] + high_col);
+            var high_col = colorMod($("#high")[0]); // lighten / transparency?
+
+            high_col = colorMod($("#high")[0]); // lighten / transparency?
+            vol_col = colorMod($("#vol")[0])*colors[0] + high_col*colors[0];
+            bass_col = colorMod($("#bass")[0])*colors[1] + high_col*colors[1];
+            low_col = colorMod($("#low")[0])*colors[2] + high_col*colors[2];
+
+            vol_col = vol_col < 0 ? 0 : vol_col >= 255 ? 255 : vol_col | 0;
+            bass_col = bass_col < 0 ? 0 : bass_col >= 255 ? 255 : bass_col | 0;
+            low_col = low_col < 0 ? 0 : low_col >= 255 ? 255 : low_col | 0;
+
+            vf = rgb(vol_col, bass_col, low_col);
+            bf = rgb(bass_col, low_col, vol_col);
+            lf = rgb(low_col, vol_col, bass_col);
 
             gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
             gradient.addColorStop(1,'#000000'); //black
-            gradient.addColorStop(0.6, vol_col); //green
-            gradient.addColorStop(0.5, bass_col); //blue
-            gradient.addColorStop(0.45, low_col); //red
-    	});
+            gradient.addColorStop(0.6, vf); //green
+            gradient.addColorStop(0.5, bf); //blue
+            gradient.addColorStop(0.45, lf); //red
+
+        });
     }
     ctx.fillStyle=gradient;
+
+    gainNode.gain.value = -1.0;
+    gainNode.gain.value = 0.0;
+
     drawSpectrum(array);
+}
+
+function rgb(r, g, b){
+  return "rgb("+r+","+g+","+b+")";
 }
 
 function drawSpectrum(array) {
@@ -215,12 +233,16 @@ function drawSpectrum(array) {
 // ------------------------
 
 function colorMod(element) {
+    if (element === null) {
+        console.log("bad!");
+        abort();
+    }
     var value = element.value;
     var tint = 0;
     if (element.id === "vol") {
-        return value / 200;
+        return 1 + (value/200);
     } else {
-        return (value/100) - 0.5;
+        return 0.5 + (value/100);
     }
 }
 
@@ -237,7 +259,7 @@ function volume(element) { // reduction from [-1, 0]
 
 function bassMod(element) {
     var val = element.value * 0.1;
-    bass.gain.value = -5 + val;
+    bass.gain.value = -5.0 + val;
     console.log(bass.gain.value);
 }
 
