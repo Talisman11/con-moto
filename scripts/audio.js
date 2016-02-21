@@ -42,7 +42,9 @@ function finishedLoading(bufferList) {
 var audioBuffer;
 var sourceNode;
 var gainNode;
-var filter;
+var bass;
+var lowpass;
+var highpass;
 var analyser, analyser2;
 var javascriptNode;
 
@@ -56,9 +58,9 @@ var ctx = $("#canvas").get()[0].getContext("2d");
 // the canvas, not the specific element we draw
 var gradient = ctx.createLinearGradient(0,0,0,900); // (x, y), (height, width)?
 gradient.addColorStop(1,'#000000'); //black
-gradient.addColorStop(0.75,'#0000ff'); //blue
-gradient.addColorStop(0.25,'#00ffff'); //cyan
-gradient.addColorStop(0,'#00ff00'); //green
+gradient.addColorStop(0.6,'#9966ff'); //green
+gradient.addColorStop(0.5,'#1a75ff'); //blue
+gradient.addColorStop(0.45,'#99ffa3'); //red
 
 // load the sound
 setupAudioNodes();
@@ -76,20 +78,40 @@ function setupAudioNodes() {
     analyser.smoothingTimeConstant = 0.3;
     analyser.fftSize = 1024;
     // biquad filter
-    filter = context.createBiquadFilter();
-    
+    lowpass = context.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 440; // cutoff at 440hz
+
+    highpass = context.createBiquadFilter();
+    highpass.type = 'highpass';
+    highpass.frequency.value = 20000; // cutoff at 20Khz
+
+    // bass
+    bass = context.createBiquadFilter();
+    bass.type = 'lowshelf';
+    bass.frequency.value = 440; //assume < 440 needs boost
+    bass.gain.value = -1;
+
     // gain node
     gainNode = context.createGain();
-    gainNode.gain.value = -0.0;
-    console.log(gainNode.gain.value);
+    gainNode.gain.value = 0.0;
 
     // create a buffer source node
     sourceNode = context.createBufferSource();
     sourceNode.connect(analyser);
     analyser.connect(javascriptNode);
 
+    sourceNode.connect(lowpass);
+    sourceNode.connect(highpass);
+    lowpass.connect(context.destination);
+    highpass.connect(context.destination);
+
+    sourceNode.connect(bass);
+    bass.connect(context.destination);
+
     sourceNode.connect(gainNode);
     gainNode.connect(context.destination);
+
     sourceNode.connect(context.destination);
 }
 
@@ -121,9 +143,18 @@ function playSound() {
     sourceNode.loop = true;
     sourceNode.connect(analyser);
     sourceNode.connect(javascriptNode);
-    sourceNode.connect(gainNode);
 
+    sourceNode.connect(lowpass);
+    sourceNode.connect(highpass);
+    lowpass.connect(context.destination);
+    highpass.connect(context.destination);
+
+    sourceNode.connect(bass);
+    bass.connect(context.destination);
+
+    sourceNode.connect(gainNode);
     gainNode.connect(context.destination);
+    
     sourceNode.connect(context.destination);
     sourceNode.start(0, startOffset % global_buffer.duration);
 }
@@ -181,5 +212,33 @@ function volume(element) { // reduction from [-1, 0]
     } else 
         gainNode.gain.value = fraction * fraction;
 
-    // console.log(gainNode.gain.value);
+    //console.log(gainNode.gain.value);
+}
+
+function bassMod(element) {
+    var val = element.value * 0.1;
+    bass.gain.value = -5 + val;
+    console.log(bass.gain.value);
+}
+
+function lowFreq(element) {
+    var minValue = 440;
+    var maxValue = context.sampleRate / 2;
+    // Logarithm (base 2) to compute how many octaves fall in the range.
+    var numberOfOctaves = Math.log(maxValue / minValue) / Math.LN2;
+    // Compute a multiplier from 0 to 1 based on an exponential scale.
+    var multiplier = Math.pow(2, numberOfOctaves * (element.value/100 - 1.0));
+    // Get back to the frequency value between min and max.
+    lowpass.frequency.value = maxValue * multiplier;
+}
+
+function highFreq(element) {
+    var minValue = 12000;
+    var maxValue = context.sampleRate / 2;
+    // Logarithm (base 2) to compute how many octaves fall in the range.
+    var numberOfOctaves = Math.log(maxValue / minValue) / Math.LN2;
+    // Compute a multiplier from 0 to 1 based on an exponential scale.
+    var multiplier = Math.pow(2, numberOfOctaves * (element.value/100 - 1.0));
+    // Get back to the frequency value between min and max.
+    highpass.frequency.value = maxValue * multiplier;
 }
