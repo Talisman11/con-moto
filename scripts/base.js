@@ -29,9 +29,9 @@ function getArtist(input, wandering, variety){
 				console.log("got the data for manipulation");
 			//	console.log(data.response.songs);
 				playlist = data.response.songs;
-				playlist.forEach(function(song){
-					$("#results").append(String(song.title)+'\n');
-				});
+		//		playlist.forEach(function(song){
+		//			$("#results").append(String(song.title)+'\n');
+	//			});
 				accessed = true;
 			//	console.log(accessed);
 			}
@@ -59,8 +59,9 @@ function curate(input, wandering, variety){
 				console.log("wrong type perhaps?");
 			} else {
 				console.log("Time to construct the player");
-				var title = "Results for " + input;
+				var title = "Artist radio for " + input;
 				var spotifyPlayButton = playListButton(title, data.response.songs);
+				$("#results").append(spotifyPlayButton);
 			}
 		},
 		error: function(err, res){
@@ -69,6 +70,23 @@ function curate(input, wandering, variety){
 	});
 }
 		
+function playListButton(title, playlist){
+	var link = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:TITLE:TRACKS" style="width:350px; height:500px;" frameborder="0"></iframe>';
+	var ids = [];
+	playlist.forEach(function(song) {
+		var split = fidtoSpid(song.tracks[0].foreign_id);
+		ids.push(split);
+	});
+	var tracks = ids.join(',');
+	var embed = link.replace('TRACKS',tracks);
+	embed = embed.replace('TITLE',title);
+	var li = $("<span>").html(embed);
+	return $("<span>").html(embed);
+}
+function fidtoSpid(field){
+	var new_field = field.split(':');
+	return new_field[new_field.length-1];
+}
 function newSearch(){
 	var artist = $("#artist").val();
 	getArtist(artist,false,.2);

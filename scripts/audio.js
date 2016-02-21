@@ -184,10 +184,8 @@ javascriptNode.onaudioprocess = function() {
     ctx.clearRect(0, 0, 928, 550);
 
     // set the fill style
-    if(playlist == null){
-        // lol suckah
-    } else {
-        playlist.forEach(function(song){
+    if(playlist != null){
+    	playlist.forEach(function(song){
             var colors = bindSliders(song);
             var high_col = colorMod($("#high")[0]); // lighten / transparency?
 

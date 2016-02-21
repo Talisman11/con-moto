@@ -17,7 +17,7 @@ function bindSliders(song){ //might need to add more paramteres
 	var oneB = E & 0x00ff00;
 	var oneA = L & 0xff0000;
 	var colorOne = oneG + oneB + oneA;
-	
+
 	var twoG = D & 0x00ff00;
 	var twoB = E & 0xff0000;
 	var twoA= L & 0x0000ff;
@@ -30,29 +30,11 @@ function bindSliders(song){ //might need to add more paramteres
 	return [colorOne,colorTwo,colorThree];
 }
 
-function playListButton(title, playlist){
-	var link = '<iframe src="https://embed.spotify.com/?uri=spotify:trackset:TITLE:TRACKS" style="width:350px; height:500px;" frameborder="0"></iframe>';
-	var ids = [];
-	playlist.forEach(function(song) {
-		var split = fidtoSpid(song.tracks[0].foreign_id);
-		ids.push(split);
-	});
-	var tracks = ids.join(',');
-	var embed = link.replace('TRACKS',tracks);
-	embed = embed.replace('TITLE',title);
-	var li = $("<span>").html(embed);
-	return $("<span>").html(embed);
-}
-function fidtoSpid(field){
-	var new_field = field.split(':');
-	return field[field.length-1];
-}
-
 function getSpotifyPlayer(inPlaylist, callback) {
     var curSong = 0;
     var audio = null;
     var player = createPlayer();
-    var playlist = null;
+    var PL = null;
 
     function addSpotifyInfoToPlaylist() {
         var tids = [];
@@ -61,7 +43,28 @@ function getSpotifyPlayer(inPlaylist, callback) {
             tids.push(tid);
         });
 //	debugger;
-$.getJSON("https://api.spotify.com/v1/tracks/", {'ids': tids.join(',')}) 
+	$.ajax({
+		url:"https://api.spotifycom/v1/tracks/",
+		type:"GET",
+		dataType:"json",
+		crossDomain: true,
+		data: {'ids': tids.join(',')},
+		success: function(data) {
+			console.log('sptracks',tids,data);
+			data.tracks.forEach(function(track,i) {
+				inPlaylist[i].spotifyTrackInfo = track;
+			});
+	
+			console.log('inPlaylist', inPlaylist);
+			PL = filterSongs(inPlaylist);
+			showCurSong(false);
+			callback(player);
+		},
+		error: function(err, res) {
+			console.log(err);
+		}
+	});
+/*	$.getJSON("https://api.spotify.com/v1/tracks/", {'ids': tids.join(',')}) 
             .done(function(data) {
                 console.log('sptracks', tids, data);
                 data.tracks.forEach(function(track, i) {
@@ -76,8 +79,8 @@ $.getJSON("https://api.spotify.com/v1/tracks/", {'ids': tids.join(',')})
             .error( function() {
                 info("Whoops, had some trouble getting that playlist");
             }) ;
-    }
-
+    }*/
+}
     function filterSongs(songs) {
         var out = [];
 
