@@ -36,14 +36,16 @@ h1 {
   text-align: center;
   margin-top: inherit;
   margin-left: 0;
-  width: 50px;
+  width: 100px;
   height: 550px;
   display: inline-block;
   /*background-color: red;*/
   position: absolute;
 }
 
-
+#artist, #find, #results {
+  display: none;
+}
 
 #panels {
   text-align: center;
@@ -82,22 +84,42 @@ h1 {
 #canvas {
   /*vertical-align: center;
   margin-left: -450px;*/
-  z-index: 1;
+  z-index: -1;
   width: 100%;
   height: inherit;
   position: relative;
   display: inline;
+  -webkit-box-reflect: below 5px -webkit-linear-gradient(top, transparent, transparent 50%, rgba(255,255,255,0.2));
 }
+
+#play, #pause {
+  margin-bottom: 20px;
+}
+
+#sliders {
+  z-index: 1;
+  position: absolute;
+  width:55%;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+}
+
+.mdl-slider__container {
+
+  margin-top: 6px;
+  margin-bottom: 15px;
+}
+
 
 /*
 #sidebar:hover {
   margin-left: -100px;
 }
-
 #sidebar:hover #playlist {
   width: 20%
 }
-
 #sidebar:hover #interact {
   width: 75%;
 } */
