@@ -96,12 +96,12 @@ function loadSound(url) {
 }
 var startOffset = 0;
 var startTime = 0;
+// DO NOT TOUCH THIS METHOD
 var first = false;
 function playSound() {
     startTime = context.currentTime;
-    if (!first) {
-        var sourceNode = context.createBufferSource();
-        sourceNode.buffer = global_buffer;
+    if (first) {
+
         sourceNode.loop = true;
         sourceNode.connect(analyser);
         analyser.connect(javascriptNode);
@@ -109,9 +109,9 @@ function playSound() {
         sourceNode.connect(context.destination);
         // Start playback, but make sure we stay in bound of the buffer.
         sourceNode.start(0, startOffset % global_buffer.duration);
-        
     } else {
-        first = true;
+        sourceNode = context.createBufferSource();
+        sourceNode.buffer = global_buffer;
         sourceNode.loop = true;
         sourceNode.connect(analyser);
         analyser.connect(javascriptNode);
@@ -123,11 +123,9 @@ function playSound() {
 }
 
 function pauseSound() {
-  if (sourceNode) {
     sourceNode.stop();
     // Measure how much time passed since the last pause.
     startOffset += context.currentTime - startTime;
-  }
 }
 
 function onError(e) {
